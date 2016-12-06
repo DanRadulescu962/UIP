@@ -8,9 +8,11 @@ from bs4 import BeautifulSoup
 class ScrapeTest(unittest.TestCase):
 
     def setUp(self):
-        self.json = {'data' : {'children' : [{'data' : {'preview' : {
-                          'images' : [{'source' : {'url' :
-                                'url.com/some_url.png?21'}}]}}}]}}
+        self.json = {'data': {'children': [{'data': {'preview': {
+                          'images': [{'source':
+                                      {'url':
+                                       'url.com/some_url.png?21'
+                                       }}]}}}]}}
         self.html = ('<html><head></head><body><div class="y5w1y">'
                      '<div class="hduMF"><div class="_31wG7 _3YIV2">'
                      'Some text</div><div class="_114MZ"> Some text'
@@ -44,9 +46,10 @@ class ScrapeTest(unittest.TestCase):
     def test_reddit_image_links(self):
         scrape.make_json = lambda x: {
                             'data': {'children': [{'data': {'preview': {
-                              'images': [{'source': {'url':
-                                                     'url.com/some_url.png?21'}
-                                          }]}}}]}}
+                              'images': [{'source':
+                                          {'url':
+                                           'url.com/some_url.png?21'
+                                           }}]}}}]}}
         self.assertEqual(scrape.get_reddit_image_links('url', 1),
                          [('some_url.png', 'url.com/some_url.png?21')])
 
@@ -58,12 +61,12 @@ class ScrapeTest(unittest.TestCase):
         # Bad Json, mostly in case of bad internet
         json_1 = self.json
         json_1['data'] = {}
-        scrape.make_json = lambda x  : json_1
+        scrape.make_json = lambda x: json_1
         self.assertEqual(scrape.get_reddit_image_links('url', 1), [])
 
     def test_unsplash_image_links(self):
         old_make_soup = scrape.make_soup
-        scrape.make_soup = lambda x : BeautifulSoup(self.html, "html.parser")
+        scrape.make_soup = lambda x: BeautifulSoup(self.html, "html.parser")
 
         self.assertEqual(scrape.get_unsplash_image_links('url', 1),
                          [('some_url.jpg',
@@ -71,6 +74,6 @@ class ScrapeTest(unittest.TestCase):
 
         # Bad html file, mostly in case of bad internet
         html = '<html></html>'
-        scrape.make_soup = lambda x : BeautifulSoup(html, "html.parser")
+        scrape.make_soup = lambda x: BeautifulSoup(html, "html.parser")
         self.assertEqual(scrape.get_unsplash_image_links('url', 1), [])
         scrape.make_soup = old_make_soup
