@@ -42,6 +42,10 @@ class ScrapeTest(unittest.TestCase):
                   '~text?txtsize=15&txt=image1&w=120&h=120')]
             scrape.get_images('url', directory, 1)
             self.assertEqual(os.listdir(directory), ['filename.png'])
+            try:
+                os.remove('filename.png')
+            except:
+                pass
 
     def test_reddit_image_links(self):
         scrape.make_json = lambda x: {
@@ -94,3 +98,4 @@ class ScrapeTest(unittest.TestCase):
             'filename.png',
             'url'
         ), False)
+        os.remove('filename.png')

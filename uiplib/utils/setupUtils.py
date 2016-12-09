@@ -8,12 +8,16 @@ def make_dir(dirpath):
         os.chmod(dirpath, 0o777)
 
 
+def get_current_version():
+    return sys.version_info
+
+
 def check_version():
     """Check for the version of python interpreter"""
     # Required version of python interpreter
     req_version = (3, 5)
     # Current version of python interpreter
-    curr_version = sys.version_info
+    curr_version = get_current_version()
 
     # Exit if minimum requirements are not met
     if curr_version < req_version:
