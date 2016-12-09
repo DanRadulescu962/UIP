@@ -58,6 +58,12 @@ class ScrapeTest(unittest.TestCase):
         self.assertEqual(scrape.get_reddit_image_links('url', 1),
                          [('some_url.png', 'url.com/some_url.png?21')])
 
+        # No preview images
+        json_1 = self.json
+        json_1['data']['children'] = [{}]
+        scrape.make_json = lambda x: json_1
+        self.assertEqual(scrape.get_reddit_image_links('url', 1), [])
+
         # Bad Json, mostly in case of bad internet
         json_1 = self.json
         json_1['data'] = {}
@@ -77,3 +83,14 @@ class ScrapeTest(unittest.TestCase):
         scrape.make_soup = lambda x: BeautifulSoup(html, "html.parser")
         self.assertEqual(scrape.get_unsplash_image_links('url', 1), [])
         scrape.make_soup = old_make_soup
+
+    def test_download(self):
+        self.assertEqual(scrape.download_store_images(
+            'filename.png',
+            'https://placeholdit.imgix.net/'
+            '~text?txtsize=15&txt=image1&w=120&h=120'
+        ), True)
+        self.assertEqual(scrape.download_store_images(
+            'filename.png',
+            'url'
+        ), False)

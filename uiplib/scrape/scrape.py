@@ -138,8 +138,10 @@ def download_store_images(full_path, image_link):  # pragma no-cover
         urlretrieve(image_link,
                     full_path,
                     reporthook=dlProgress)
+        return True
     except Exception as e:
         print("Image cannot be downloaded: ", str(e))
+        return False
 
 
 def get_images(url, directory, count):
