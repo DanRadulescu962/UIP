@@ -23,16 +23,24 @@ class ScrapeTest(unittest.TestCase):
     def test_get_image_links(self):
         old_reddit = scrape.get_reddit_image_links
         old_unsplash = scrape.get_unsplash_image_links
+        old_desktoppr = scrape.get_desktoppr_image_links
         scrape.get_unsplash_image_links = lambda x, y: [(1, 1), (2, 2)]
         scrape.get_reddit_image_links = lambda x, y: [(7, 7), (8, 8)]
+        scrape.get_desktoppr_image_links = lambda x, y: [(3, 3), (4, 4)]
+
         self.assertEqual(scrape.get_image_links(
                             'www.reddit.com/r/CoolSite', 2),
                          [(7, 7), (8, 8)])
         self.assertEqual(scrape.get_image_links(
                             'www.unsplash.com/new', 2),
                          [(1, 1), (2, 2)])
+        self.assertEqual(scrape.get_image_links(
+                            'api.desktoppr.co/1/wallpapers', 2),
+                         [(3, 3), (4, 4)])
+
         scrape.get_reddit_image_links = old_reddit
         scrape.get_unsplash_image_links = old_unsplash
+        scrape.get_desktoppr_image_links = old_desktoppr
 
     def test_get_images(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -87,6 +95,18 @@ class ScrapeTest(unittest.TestCase):
         scrape.make_soup = lambda x: BeautifulSoup(html, "html.parser")
         self.assertEqual(scrape.get_unsplash_image_links('url', 1), [])
         scrape.make_soup = old_make_soup
+
+    def test_desktoppr_image_links(self):
+        scrape.make_json = lambda x: {
+            'response': [{
+                    'image': {
+                        'url': 'example.com/example.jpg'
+                    }
+            }]
+        }
+
+        self.assertEqual(scrape.get_desktoppr_image_links('url', 1),
+                         [('example.jpg', 'example.com/example.jpg')])
 
     def test_download(self):
         self.assertEqual(scrape.download_store_images(

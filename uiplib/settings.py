@@ -11,16 +11,16 @@ settings_file_path = os.path.join(HOME_DIR, "settings.json")
 
 class ParseSettings:
 
-    def __init__(self):
+    def __init__(self, args=None):
         self.settings = self.get_settings_from_file()
-        self.settings.update(self.get_settings_from_cli())
+        self.settings.update(self.get_settings_from_cli(args))
 
     def get_settings_from_file(self):
         with open(settings_file_path, "r") as settings_file:
             settings = json.loads(settings_file.read())
         return settings
 
-    def get_settings_from_cli(self):
+    def get_settings_from_cli(self, args=None):
         self.parser = argparse.ArgumentParser()
         self.parser.add_argument("--offline", action="store_true",
                                  help="Runs UIP in offline mode.")
@@ -41,7 +41,7 @@ class ParseSettings:
                                  help="Start the app in Graphical "
                                  "Interface mode. This should not be"
                                  "combined with --service flag.")
-        args = self.parser.parse_args()
+        args = self.parser.parse_args(args)
 
         settings = {
             'service': args.service,
@@ -56,5 +56,5 @@ class ParseSettings:
 
         return settings
 
-    def show_help(self):
+    def show_help(self):  # pragma: no cover
         self.parser.print_help()

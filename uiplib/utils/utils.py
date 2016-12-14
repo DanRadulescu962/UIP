@@ -14,7 +14,7 @@ def get_percentage(unew, uold, start):
     # atleast as close to 0.0001 difference exists
 
 
-def update_settings(new_settings):
+def update_settings(new_settings):  # pragma: no cover
     settings_file = os.path.join(HOME_DIR, 'settings.json')
     temp_file = os.path.join(HOME_DIR, 'temp.json')
     with open(temp_file, "w+") as _file:
